@@ -1,0 +1,52 @@
+# MSWAL Dataset Configuration
+# Multi-label abdominal lesion dataset
+#
+# Dataset structure:
+#   MSWAL/
+#   ├── imagesTr/
+#   │   ├── MSWAL_0001_0000.nii.gz
+#   │   └── ...
+#   └── labelsTr/
+#       ├── MSWAL_0001.nii.gz
+#       └── ...
+#
+# Original labels:
+#   0: background
+#   1: gallstone (EXCLUDED)
+#   2: kidney stone (EXCLUDED)
+#   3: liver tumor (INCLUDED)
+#   4: kidney tumor (INCLUDED)
+#   5: pancreatic cancer (INCLUDED)
+#   6: liver cyst (INCLUDED)
+#   7: kidney cyst (INCLUDED)
+#
+# Run with: python -m uclp.uclp_preprocess --config configs/MSWAL/mswal.yaml
+
+name: MSWAL
+id: 41
+
+# Adapter configuration - mswal adapter (handles _0000 suffix mismatch)
+adapter: mswal
+input_images: /path/to/your/dataset/MSWAL/imagesTr
+input_labels: /path/to/your/dataset/MSWAL/labelsTr
+
+# Label filtering
+# Keep only tumor and cyst labels (3-7), exclude stones (1-2)
+labels_to_keep: [3, 4, 5, 6, 7]
+# Output will be binarized to 0 (background) and 1 (lesion)
+
+# Output directory
+output_dir: /path/to/output/nnUNet_raw
+
+# Crop parameters
+crop_size: [128, 128, 64]        # [x, y, z] in voxels
+
+# Augmentation parameters
+num_augmentations: 3             # Generate 3 samples per lesion (1 centered + 2 augmented)
+offset_range_mm: 10.0            # Maximum offset radius for spherical sampling (mm)
+
+# Quality control
+min_lesion_size_voxels: 20      # Minimum lesion size to include (filter out annotation errors)
+
+# Reproducibility
+random_seed: 42

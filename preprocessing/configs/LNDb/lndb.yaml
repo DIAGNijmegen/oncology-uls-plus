@@ -1,0 +1,38 @@
+# LNDb Dataset Configuration
+# Lung Nodule Database with MSD-like imagesTr/labelsTr structure
+#
+# Dataset structure:
+#   /uls_data/data/archives/LNDb/
+#   ├── imagesTr/
+#   │   ├── LNDb-0001.nii.gz
+#   │   └── ...
+#   └── labelsTr/
+#       ├── LNDb-0001.nii.gz  # binary mask; multiple lesions as connected components
+#       └── ...
+#
+# Run with: python uclp/uclp_preprocess.py --config configs/LNDb/lndb.yaml
+
+name: LNDb
+id: 49
+
+# Adapter configuration - lndb adapter (aliases MSD behavior)
+adapter: lndb
+input_images: /path/to/your/dataset/LNDb/imagesTr
+input_labels: /path/to/your/dataset/LNDb/labelsTr
+
+# Output directory
+output_dir: /path/to/output/nnUNet_raw
+
+# Crop parameters
+crop_size: [128, 128, 64]        # [x, y, z] in voxels
+
+# Augmentation parameters
+num_augmentations: 3             # Generate 3 samples per lesion (1 centered + 2 augmented)
+
+# Quality control
+min_lesion_size_voxels: 10      # Minimum lesion size to include (filter out annotation errors)
+
+# Reproducibility
+random_seed: 42
+
+

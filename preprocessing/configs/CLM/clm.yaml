@@ -1,0 +1,39 @@
+# CLM Dataset Configuration
+# Colorectal Liver Metastases with nested case/study/images-masks structure
+#
+# Dataset structure:
+#   CLM/nifti/
+#   ├── CRLM-CT-1001/
+#   │   └── study-{date}_{description}/
+#   │       ├── images/
+#   │       │   └── CRLM-CT-1001_{date}_ct-{series}_na.nii.gz
+#   │       └── masks/
+#   │           └── CRLM-CT-1001_{date}_tumor.nii.gz
+#   └── CRLM-CT-1002/
+#       └── ...
+#
+# Run with: python uclp/uclp_preprocess.py --config configs/CLM/clm.yaml
+
+name: CLM
+id: 39
+
+# Adapter configuration - clm adapter
+# Use this for CLM dataset with nested case/study/images-masks structure
+adapter: clm
+input_images: /path/to/your/dataset/CLM/nifti
+
+# Output directory
+output_dir: /path/to/output/nnUNet_raw
+
+# Crop parameters
+crop_size: [128, 128, 64]        # [x, y, z] in voxels
+
+# Augmentation parameters
+num_augmentations: 3             # Generate 3 samples per lesion (1 centered + 2 augmented)
+offset_range_mm: 10.0            # Maximum offset radius for spherical sampling (mm)
+
+# Quality control
+min_lesion_size_voxels: 100      # Minimum lesion size to include (filter out annotation errors)
+
+# Reproducibility
+random_seed: 42

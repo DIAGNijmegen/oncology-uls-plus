@@ -1,0 +1,51 @@
+# Longitudinal CT Dataset Configuration
+# Baseline and followup scans with multi-label masks
+#
+# Dataset structure:
+#   Longitudinal-CT/
+#   ├── inputsTr/
+#   │   ├── {case_id}_BL_img_BL_img_00.nii.gz  (baseline image, primary/torso)
+#   │   ├── {case_id}_BL_img_BL_img_01.nii.gz  (baseline image, secondary/head)
+#   │   ├── {case_id}_BL_mask_BL_img_00.nii.gz (baseline mask, primary)
+#   │   ├── {case_id}_FU_img_FU_img_00.nii.gz  (followup image, primary)
+#   │   └── ...
+#   └── targetsTr/
+#       ├── {case_id}_FU_mask_FU_img_00.nii.gz (followup mask, primary)
+#       └── ...
+#
+# Note: Masks contain multi-label format (0=background, 1,2,3...=individual lesions)
+#       Each lesion will be extracted as a separate sample
+#
+# Run with: python -m uclp.uclp_preprocess --config configs/Longitudinal-CT/longitudinal_ct.yaml
+
+name: Longitudinal_CT
+id: 40
+
+# Adapter configuration - longitudinal_ct adapter
+# Use this for longitudinal CT dataset with BL/FU timepoints
+adapter: longitudinal_ct
+input_images: /path/to/your/dataset/Longitudinal-CT
+
+# Optional: Filter by timepoint
+# Uncomment to process only baseline or followup:
+# timepoint: BL  # Options: BL (baseline) or FU (followup)
+
+# Optional: Filter by scan type
+# Uncomment to process only primary or secondary scans:
+# scan_type: 00  # Options: 00 (primary/torso) or 01 (secondary/head)
+
+# Output directory
+output_dir: /path/to/output/nnUNet_raw
+
+# Crop parameters
+crop_size: [128, 128, 64]        # [x, y, z] in voxels
+
+# Augmentation parameters
+num_augmentations: 3             # Generate 3 samples per lesion (1 centered + 2 augmented)
+# offset_range_mm is deprecated and ignored
+
+# Quality control
+min_lesion_size_voxels: 5      # Minimum lesion size to include (filter out annotation errors)
+
+# Reproducibility
+random_seed: 42

@@ -1,0 +1,41 @@
+# WORC GIST Dataset Configuration
+# Gastrointestinal Stromal Tumors with per-case folders
+#
+# Dataset structure:
+#   worc/
+#   ├── GIST-001/
+#   │   ├── image.nii.gz
+#   │   └── segmentation.nii.gz
+#   ├── GIST-002/
+#   │   ├── image.nii.gz
+#   │   └── segmentation.nii.gz
+#   └── ...
+#
+# Run with: python uclp/uclp_preprocess.py --config configs/WORC/worc_gist.yaml
+
+name: WORC_GIST
+id: 38
+
+# Adapter configuration - worc adapter
+# Use this for per-case folders with single segmentation file
+adapter: worc
+input_images: /path/to/your/dataset/worc
+
+# WORC-specific parameters
+cohort_filter: GIST              # Only process GIST cases (ignore CRLM, Liver, Melanoma)
+
+# Output directory
+output_dir: /path/to/output/nnUNet_raw
+
+# Crop parameters
+crop_size: [128, 128, 64]        # [x, y, z] in voxels
+
+# Augmentation parameters
+num_augmentations: 3             # Generate 3 samples per lesion (1 centered + 2 augmented)
+offset_range_mm: 10.0            # Maximum offset radius for spherical sampling (mm)
+
+# mask exclusion 
+min_lesion_size_voxels: 25  # Mininum mask size in voxels for the lesion to be included
+
+# Reproducibility
+random_seed: 42

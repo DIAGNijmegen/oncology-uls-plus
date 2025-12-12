@@ -1,0 +1,49 @@
+# WORC CRLM Dataset Configuration
+# Colorectal Liver Metastases with per-case folders and multi-rater annotations
+#
+# Dataset structure:
+#   worc/
+#   ├── CRLM-001/
+#   │   ├── image.nii.gz
+#   │   ├── segmentation_lesion0_CNN.nii.gz
+#   │   ├── segmentation_lesion0_RAD.nii.gz
+#   │   ├── segmentation_lesion0_STUD1.nii.gz
+#   │   ├── segmentation_lesion1_CNN.nii.gz
+#   │   ├── segmentation_lesion1_RAD.nii.gz
+#   │   └── ...
+#   ├── CRLM-002/
+#   │   └── ...
+#   └── ...
+#
+# Run with: python uclp/uclp_preprocess.py --config configs/WORC/worc_crlm.yaml
+
+name: WORC_CRLM
+id: 36
+
+# Adapter configuration - worc adapter
+# Use this for per-case folders with multiple lesion segmentations and multi-rater annotations
+adapter: worc
+input_images: /path/to/your/dataset/worc
+
+# WORC-specific parameters
+cohort_filter: CRLM              # Only process CRLM cases (ignore GIST, Liver, Melanoma)
+rater_strategy: majority         # Use majority voting for multi-rater merging
+authority_rater: RAD             # Use RAD (Radiologist) as tiebreaker for 50/50 splits
+
+# Output directory
+output_dir: /path/to/output/nnUNet_raw
+
+# Crop parameters
+crop_size: [128, 128, 64]        # [x, y, z] in voxels
+
+# Augmentation parameters
+num_augmentations: 3             # Generate 3 samples per lesion (1 centered + 2 augmented)
+offset_range_mm: 10.0            # Maximum offset radius for spherical sampling (mm)
+body_threshold_hu: -500          # HU threshold for body detection (optional, default -500)
+max_sampling_attempts: 50        # Max attempts to find valid offset (optional, default 50)
+
+# mask exclusion 
+min_lesion_size_voxels: 25  # Mininum mask size in voxels for the lesion to be included
+
+# Reproducibility
+random_seed: 42

@@ -1,0 +1,13 @@
+name: ULS_Challenge_Test_128
+id: 403
+adapter: uls_challenge
+input_images: /path/to/your/dataset/ULS_Challenge/images
+input_labels: /path/to/your/dataset/ULS_Challenge/labelsTs
+output_dir: /path/to/output/nnUNet_raw/
+crop_size: [128, 128, 64]
+num_augmentations: 3
+min_lesion_size_voxels: 5
+random_seed: 42
+labels_are_per_lesion: true
+debug_pairs: true
+

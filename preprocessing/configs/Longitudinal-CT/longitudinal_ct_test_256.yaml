@@ -1,0 +1,16 @@
+name: Longitudinal_CT_Test_256
+id: 402
+adapter: longitudinal_ct_test
+input_images: /path/to/your/dataset/MAST/mast_complete
+patient_list_csv: /data/bodyct/experiments/nielsrocholl/ULS+/nnUNet_raw/Longitudinal_CT_Test/patients.csv
+output_dir: /path/to/output/nnUNet_raw/
+crop_size: [256, 256, 128]
+num_augmentations: 3
+min_lesion_size_voxels: 5
+random_seed: 42
+# Optional filters
+# timepoint: BL  # or FU
+# scan_type: "00"  # or "01"
+append_lesion_type: true
+lesion_types_dir: /data/bodyct/experiments/nielsrocholl/MAST/mast_complete/inputsTr
+

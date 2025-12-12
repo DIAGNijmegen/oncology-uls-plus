@@ -1,0 +1,37 @@
+# ULS23 KITS21 Dataset Configuration
+# Kidney tumor segmentation dataset
+#
+# Dataset structure:
+#   ULS23/processed_data/fully_annotated/kits21/
+#   ├── images/
+#   │   ├── kidney21_case_00000_lesion_01_sample_0.nii.gz
+#   │   └── ...
+#   └── labels/
+#       ├── kidney21_case_00000_lesion_01_sample_0.nii.gz
+#       └── ...
+#
+# Run with: python uclp/uclp_preprocess.py --config configs/ULS23/uls23_kits21.yaml
+
+name: ULS23_KITS21
+id: 40
+
+# Adapter configuration - uls23 adapter
+adapter: uls23
+input_images: /path/to/your/dataset/ULS23/kits21/images
+input_labels: /path/to/your/dataset/ULS23/kits21/labels
+
+# Output directory
+output_dir: /path/to/output/nnUNet_raw
+
+# Crop parameters
+crop_size: [128, 128, 64]        # [x, y, z] in voxels
+
+# Augmentation parameters
+num_augmentations: 3             # Generate 3 samples per lesion (1 centered + 2 augmented)
+offset_range_mm: 10.0            # Maximum offset radius for spherical sampling (mm)
+
+# Quality control
+min_lesion_size_voxels: 20      # Minimum lesion size to include
+
+# Reproducibility
+random_seed: 42

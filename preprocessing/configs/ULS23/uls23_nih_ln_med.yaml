@@ -1,0 +1,19 @@
+# ULS23 NIH Lymph Node Mediastinal Dataset Configuration
+# Mediastinal lymph node segmentation
+#
+# Run with: python uclp/uclp_preprocess.py --config configs/ULS23/uls23_nih_ln_med.yaml
+
+name: ULS23_NIH_LN_MED
+id: 44
+
+adapter: uls23
+input_images: /path/to/your/dataset/ULS23/NIH_LN_MED/images
+input_labels: /path/to/your/dataset/ULS23/NIH_LN_MED/labels
+
+output_dir: /path/to/output/nnUNet_raw
+
+crop_size: [128, 128, 64]
+num_augmentations: 3
+offset_range_mm: 10.0
+min_lesion_size_voxels: 20
+random_seed: 42

@@ -1,0 +1,19 @@
+# ULS23 LiTS Dataset Configuration
+# Liver tumor segmentation
+#
+# Run with: python uclp/uclp_preprocess.py --config configs/ULS23/uls23_lits.yaml
+
+name: ULS23_LiTS
+id: 42
+
+adapter: uls23
+input_images: /path/to/your/dataset/ULS23/LiTS/images
+input_labels: /path/to/your/dataset/ULS23/LiTS/labels
+
+output_dir: /path/to/output/nnUNet_raw
+
+crop_size: [128, 128, 64]
+num_augmentations: 3
+offset_range_mm: 10.0
+min_lesion_size_voxels: 20
+random_seed: 42

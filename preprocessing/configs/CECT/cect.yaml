@@ -1,0 +1,48 @@
+# CECT Dataset Configuration
+# Multiphase contrast-enhanced CT with separate ct_files and mask_files folders
+#
+# Dataset structure:
+#   CECT/
+#   ├── ct_files/
+#   │   ├── P0001_ct_P.nii.gz   (pre-contrast)
+#   │   ├── P0001_ct_C1.nii.gz  (arterial phase)
+#   │   ├── P0001_ct_C2.nii.gz  (portal phase)
+#   │   ├── P0001_ct_C3.nii.gz  (delayed phase)
+#   │   └── ...
+#   └── mask_files/
+#       ├── P0001_mask_P.nii.gz
+#       ├── P0001_mask_C1.nii.gz
+#       ├── P0001_mask_C2.nii.gz
+#       ├── P0001_mask_C3.nii.gz
+#       └── ...
+#
+# Run with: python -m uclp.uclp_preprocess --config configs/CECT/cect.yaml
+
+name: CECT
+id: 37
+
+# Adapter configuration - cect adapter
+# Use this for CECT dataset with multiphase CT
+adapter: cect
+input_images: /path/to/your/dataset/CECT/ct_files
+input_labels: /path/to/your/dataset/CECT/mask_files
+
+# Optional: Process only specific phase
+# Uncomment to filter by phase:
+# phase: C1  # Options: P (pre-contrast), C1 (arterial), C2 (portal), C3 (delayed)
+
+# Output directory
+output_dir: /path/to/output/nnUNet_raw
+
+# Crop parameters
+crop_size: [128, 128, 64]        # [x, y, z] in voxels
+
+# Augmentation parameters
+num_augmentations: 3             # Generate 3 samples per lesion (1 centered + 2 augmented)
+offset_range_mm: 10.0            # Maximum offset radius for spherical sampling (mm)
+
+# Quality control
+min_lesion_size_voxels: 100      # Minimum lesion size to include (filter out annotation errors)
+
+# Reproducibility
+random_seed: 42

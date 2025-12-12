@@ -1,0 +1,48 @@
+# WAW-TACE Dataset Configuration
+# Multiphase abdominal CT with HCC tumors (pre-TACE)
+# This config demonstrates the 'waw_tace' adapter for multiphase CT datasets
+#
+# Dataset structure:
+#   WAW-TACE/
+#   ├── Images/
+#   │   └── {patient_id}/
+#   │       ├── {patient_id}_0_scan.nii.gz  (native phase)
+#   │       ├── {patient_id}_1_scan.nii.gz  (arterial phase)
+#   │       ├── {patient_id}_2_scan.nii.gz  (portal phase)
+#   │       └── {patient_id}_3_scan.nii.gz  (delayed phase)
+#   └── Masks/
+#       └── {patient_id}/
+#           ├── {patient_id}_0_0_tumor_seg.nii.gz
+#           ├── {patient_id}_1_0_tumor_seg.nrrd
+#           └── ...
+#
+# Run with: python uclp/uclp_preprocess.py --config configs/waw_tace.yaml
+
+name: WAW_TACE
+id: 35
+
+# Adapter configuration - waw_tace adapter
+# Use this for WAW-TACE multiphase CT dataset
+adapter: waw_tace
+input_images: /path/to/your/dataset/WAW-TACE/Images
+input_labels: /path/to/your/dataset/WAW-TACE/Masks
+
+# Optional: Process only specific phase (0=native, 1=arterial, 2=portal, 3=delayed)
+# Uncomment to filter by phase:
+# phase: 1  # Process only arterial phase
+
+# Output directory
+output_dir: /path/to/output/nnUNet_raw
+
+# Crop parameters
+crop_size: [128, 128, 64]  # [x, y, z] in voxels
+
+# Augmentation parameters
+num_augmentations: 3       # Generate 3 samples per lesion (1 centered + 2 augmented)
+offset_range_mm: 10.0      # Maximum offset radius for spherical sampling (mm)
+
+# mask exclusion 
+min_lesion_size_voxels: 25  # Mininum mask size in voxels for the lesion to be included
+
+# Reproducibility
+random_seed: 42
