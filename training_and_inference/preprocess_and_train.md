@@ -13,8 +13,23 @@ The merged dataset must follow nnU-Net v2 format (at minimum):
 
 ### 1) One-time setup
 Make the custom resampling function available inside your **nnUNetv2 installation** so that the function name
-`no_resampling_data_or_seg_to_shape` can be imported at runtime (we did this by merging/copying
-`nnunetv2/preprocessing/resampling/custom_resampling.py` into the installed nnU-Net package).
+`no_resampling_data_or_seg_to_shape` can be imported at runtime.
+
+**For pip-installed nnunetv2**, copy all custom files into the installed package:
+
+```bash
+# Find nnunetv2 installation location and copy all custom files
+NNUNET_PATH=$(python3 -c "import nnunetv2; import os; print(os.path.dirname(nnunetv2.__file__))")
+cp -r nnunetv2/* "${NNUNET_PATH}/"
+```
+
+**Alternative using pip show** (if Python import method doesn't work):
+
+```bash
+NNUNET_SITE_PACKAGES=$(pip3 show nnunetv2 | grep Location | awk '{print $2}')
+cp -r nnunetv2/* "${NNUNET_SITE_PACKAGES}/nnunetv2/"
+
+**Warning**: This modification will be overwritten if you reinstall/upgrade nnunetv2. You'll need to re-run the copy command after any pip install/upgrade.
 
 Also ensure nnU-Net environment variables are set:
 
@@ -47,6 +62,13 @@ nnUNetv2_plan_experiment \
 
 This creates a plans file like:
 `$nnUNet_preprocessed/DatasetXXX_.../nnUNetResEncUNetLPlans_noresamp.json`
+
+verify patch size covers the entire VOI. In the plans file, `patch_size` is stored as **(z, y, x)**.
+If needed, set:
+
+```json
+"patch_size": [64, 128, 128]
+```
 
 ### 4) Manually edit the plans JSON to disable resampling
 In `nnUNetResEncUNetLPlans_noresamp.json`, change these keys to `no_resampling_data_or_seg_to_shape`:

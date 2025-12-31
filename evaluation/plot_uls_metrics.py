@@ -18,6 +18,11 @@ def load_evaluation_rows(csv_path: Path) -> List[Tuple[str, float, float, float,
             if row.get("scope") != "evaluation":
                 continue
             lt = str(row.get("lesion_type", ""))
+            # Strip file extension if present (e.g., "lymph-node.nii.gz" -> "lymph-node")
+            if lt.endswith(".nii.gz"):
+                lt = lt[:-7]
+            elif lt.endswith(".nii"):
+                lt = lt[:-4]
             d_mean = float(row.get("dsc_mean", 0) or 0)
             d_std = float(row.get("dsc_std", 0) or 0)
             b_mean = float(row.get("biou_mean", 0) or 0)

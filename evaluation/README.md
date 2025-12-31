@@ -1,46 +1,83 @@
-## ULS+ inference (nnU-Net v2 CLI) and evaluation
+# ULS+ Evaluation
 
-### 1) Set environment variables
+Evaluate predictions and generate metrics/plots.
+
+## Prerequisites
+
+- Predictions generated (see `training/inference.md`)
+- Test dataset with ground truth labels organized in nnUNet format
+
+## Setup
+
+Set environment variables:
+
 ```bash
-export nnUNet_raw=/data/bodyct/experiments/nielsrocholl/ULS+/nnUNet_raw
-export nnUNet_results=/data/bodyct/experiments/nielsrocholl/ULS+/nnUNet_resultsv2
+export nnUNet_raw=<path/to/raw/data>
+export nnUNet_results=<path/to/model/results>
 ```
 
-### 2) Run inference to shared storage
+## Run Evaluation
+
+### 1. Generate Metrics CSV
+
+Evaluate predictions against ground truth and compute Dice/Boundary IoU metrics:
+
 ```bash
-nnUNetv2_predict \
-  -i /data/bodyct/experiments/nielsrocholl/ULS+/nnUNet_raw/Dataset401_Longitudinal_CT_Test_128/imagesTr \
-  -o /data/bodyct/experiments/nielsrocholl/ULS+/nnUNet_raw/Dataset401_Longitudinal_CT_Test_128/preds \
-  -d Dataset090_ULS23_Combined \
-  -c 3d_fullres_singlepass \
-  -p nnUNetResEncUNetLPlans \
-  -f all \
-  -chk checkpoint_best.pth
-```
-If needed, you can switch to the latest checkpoint with `-chk checkpoint_latest.pth`.
-
-Notes:
-- The test dataset.json `numTraining` value does not affect inference.
-- Input filenames must mirror training format (`*_0000.nii.gz`).
-
-### 3) Run evaluation and write CSV (with progress + parallel workers)
-The evaluation script prints tqdm progress bars and supports parallel processing via `--workers`.
-
-Basic usage:
-```bash
-python3 nnunet_training/pipelines/eval_uls.py \
-  --dataset-root /data/bodyct/.../nnUNet_raw/DatasetXXX_Test \
-  --preds        /path/to/predictions_dir \
-  --out          /path/to/output/uls_metrics.csv \
+python3 evaluation/eval_uls.py \
+  --dataset-root <path/to/test/dataset> \
+  --preds        <path/to/predictions> \
+  --out          <path/to/output/metrics.csv> \
   --workers      12
 ```
 
-The CSV contains per-type and overall Dice/Boundary IoU and agreement (mean pairwise Dice/Boundary IoU among normal/aug1/aug2).
+**Arguments:**
+- `--dataset-root`: Test dataset root directory (default: Dataset401_Longitudinal_CT_Test_128)
+- `--preds`: Directory containing prediction files
+- `--out`: Output CSV path for metrics
+- `--workers`: Number of parallel workers (default: 1)
+- `--labels`: Optional custom labels directory (default: `dataset-root/labelsTr`)
+- `--per-sample-csv`: Optional path to write per-sample Dice scores
+- `--per-sample-agreement-csv`: Optional path to write per-sample agreement scores
 
-### 4) Plot metrics (save PNGs)
-Generate simple bar plots (Dice and Boundary IoU) from the CSV. Images are saved (no interactive display).
+**Output:**
+The CSV contains per-lesion-type and overall metrics:
+- Dice score and Boundary IoU (mean ± std)
+- Agreement metrics (mean pairwise Dice/BIoU among normal/aug1/aug2 predictions)
+- Sample counts per lesion type
+
+### 2. Generate Plots
+
+#### Single Dataset Plots
+
+Generate bar plots for a single evaluation CSV:
+
 ```bash
-python3 nnunet_training/pipelines/plot_uls_metrics.py \
-  --csv    /path/to/output/uls_metrics.csv \
-  --outdir /path/to/output/plots   # optional; defaults to CSV folder
+python3 evaluation/plot_uls_metrics.py \
+  --csv    <path/to/metrics.csv> \
+  --outdir <path/to/output/plots>  # optional; defaults to CSV folder
 ```
+
+**Output:** `uls_dice_by_type.png` and `uls_biou_by_type.png`
+
+#### Comparison Plots (ULS vs ULS+)
+
+Generate side-by-side comparison plots between two models:
+
+```bash
+python3 evaluation/plot_uls_combined.py \
+  --csv-uls      <path/to/uls_metrics.csv> \
+  --csv-uls-plus <path/to/uls_plus_metrics.csv> \
+  --outdir       <path/to/output/plots>  # optional; defaults to CSV folder
+```
+
+**Output:**
+- `combined_dice_by_type.png`
+- `combined_biou_by_type.png`
+- `combined_agreement_dice_by_type.png`
+- `combined_agreement_biou_by_type.png`
+
+## Notes
+
+- Input prediction filenames must match label format (e.g., `*_128_updated_*` → `*_256_updated_*`)
+- The evaluation script uses tqdm progress bars and supports parallel processing
+- Agreement metrics require predictions with `_aug1` and `_aug2` variants
