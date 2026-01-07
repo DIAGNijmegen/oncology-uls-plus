@@ -132,13 +132,14 @@ Pre-trained model weights are available on:
 
 If you use ULS+ in your research, please cite the arXiv preprint:
 ```
-@article{rocholl2026ulsplus,
+@article{weber2026ulsplus,
   title   = {ULS+: Data-driven Model Adaptation Enhances Lesion Segmentation},
-  author  = {Rocholl, Niels and Weber, Rianne},
+  author  = {Weber, Rianne and Rocholl, Niels and de Grauw, Max and Prokop, Mathias and Smit, Ewoud and Hering, Alessa},
   journal = {arXiv preprint arXiv:2601.02988},
   year    = {2026},
   note    = {Accepted at BVM 2026},
 }
+
 ```
 Preprint: https://arxiv.org/abs/2601.02988
 
