@@ -133,7 +133,7 @@ Pre-trained model weights are available on:
 If you use ULS+ in your research, please cite:
 
 ```bibtex
-# TODO: Add citation when published
+https://arxiv.org/abs/2601.02988
 ```
 
 ## License
